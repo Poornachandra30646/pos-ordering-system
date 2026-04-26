@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import { SIZES, CRUSTS, EXTRA_TOPPINGS } from '../data/menuData';
 
 export default function CustomizeModal() {
@@ -17,7 +18,9 @@ export default function CustomizeModal() {
     setQty,
     addToCart,
     itemPrice,
+    outOfStockIds,
   } = useApp();
+  const { isAuthenticated } = useAuth();
 
   if (!currentPizza) return null;
 
@@ -32,6 +35,7 @@ export default function CustomizeModal() {
   };
 
   const unitPrice = itemPrice(currentPizza, currentSize, currentCrust, selectedToppings);
+  const isOOS = currentPizza ? outOfStockIds.has(currentPizza.id) : false;
 
   return (
     <div className={`overlay ${customizeOpen ? 'open' : ''}`} onClick={handleOverlayClick}>
@@ -45,6 +49,25 @@ export default function CustomizeModal() {
           <button className="modal-close" onClick={closeCustomize}>✕</button>
         </div>
         <div className="modal-body">
+          {isOOS && (
+            <div
+              style={{
+                background: 'rgba(220, 53, 69, 0.15)',
+                border: '1px solid rgba(220, 53, 69, 0.4)',
+                color: '#ff7b7b',
+                padding: '10px 14px',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: 13,
+                fontWeight: 600,
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+              }}
+            >
+              🚫 This pizza is currently out of stock.
+            </div>
+          )}
           <div className="option-group">
             <div className="option-label">Size</div>
             <div className="option-grid">
@@ -111,8 +134,13 @@ export default function CustomizeModal() {
             </div>
           </div>
 
-          <button className="add-cart-btn" onClick={addToCart}>
-            Add to Cart 🛒
+          <button
+            className="add-cart-btn"
+            onClick={addToCart}
+            disabled={isOOS}
+            style={isOOS ? { opacity: 0.4, cursor: 'not-allowed' } : {}}
+          >
+            {isOOS ? 'Out of Stock' : isAuthenticated ? 'Add to Cart 🛒' : 'Sign in to add to cart'}
           </button>
         </div>
       </div>

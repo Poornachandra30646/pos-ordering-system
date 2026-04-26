@@ -4,6 +4,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+This repository contains two deployable React apps:
+- `./` — main pizza ordering portal
+- `./admin` — admin portal
+
+Both apps share order and inventory data using the browser's `localStorage` keys `pi_orders` and `pi_inventory`.
+
 In the project directory, you can run:
 
 ### `npm start`

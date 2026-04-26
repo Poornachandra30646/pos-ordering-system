@@ -34,12 +34,11 @@ nav {
   gap: 1rem;
 }
 
+.track-btn,
 .cart-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--accent);
-  color: #fff;
   border: none;
   cursor: pointer;
   padding: 9px 20px;
@@ -49,6 +48,22 @@ nav {
   font-weight: 600;
   transition: all 0.2s;
   letter-spacing: 0.3px;
+}
+
+.track-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.track-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.cart-btn {
+  background: var(--accent);
+  color: #fff;
 }
 
 .cart-btn:hover {
@@ -1094,7 +1109,8 @@ nav {
   text-align: center;
 }
 
-.new-order-btn {
+.new-order-btn,
+.back-market-btn {
   background: var(--bg3);
   border: 1px solid var(--border2);
   color: var(--text2);
@@ -1107,9 +1123,75 @@ nav {
   transition: all 0.2s;
 }
 
-.new-order-btn:hover {
+.back-market-btn {
+  margin-right: 0.75rem;
+}
+
+.new-order-btn:hover,
+.back-market-btn:hover {
   border-color: var(--accent);
   color: var(--accent2);
+}
+
+.track-page {
+  padding: 3rem 2rem 4rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.track-page-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.track-page-header .page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(232, 93, 4, 0.15);
+  border: 1px solid rgba(232, 93, 4, 0.3);
+  color: var(--accent2);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 50px;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.track-page-content {
+  display: flex;
+  justify-content: center;
+}
+
+.tracking-card {
+  width: 100%;
+  max-width: 540px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+}
+
+.track-page-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.track-empty-state {
+  width: 100%;
+  max-width: 540px;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  border: 1px dashed var(--border2);
+  background: var(--bg2);
+  text-align: center;
+  color: var(--text2);
+}
+
+.track-empty-state p {
+  margin-bottom: 1.5rem;
 }
 
 /* ── TOAST ── */
@@ -1154,6 +1236,21 @@ nav {
 
 .section-title span {
   color: var(--accent);
+}
+
+.badge-oos {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  background: rgba(220, 53, 69, 0.9);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* ── AUTH ── */

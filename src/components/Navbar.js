@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import UserMenu from './UserMenu';
 
 export default function Navbar() {
-  const { cartCount, toggleCart } = useApp();
+  const { cartCount, toggleCart, navigateToPage } = useApp();
   const { isAuthenticated, openAuthModal } = useAuth();
 
   return (
@@ -13,6 +13,9 @@ export default function Navbar() {
         Pizzeria <span>Inferno</span> 🔥
       </div>
       <div className="nav-right">
+        <button className="track-btn" onClick={() => navigateToPage('track')}>
+          Track My Order
+        </button>
         {isAuthenticated ? (
           <UserMenu />
         ) : (

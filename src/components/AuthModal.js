@@ -22,12 +22,12 @@ export default function AuthModal() {
     resetFields();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (authTab === 'login') {
-      const ok = login(email, password);
+      const ok = await login(email, password);
       if (ok) {
         resetFields();
         closeAuthModal();
@@ -39,7 +39,7 @@ export default function AuthModal() {
         setError('Password must be at least 4 characters.');
         return;
       }
-      const ok = signup(name, email, password);
+      const ok = await signup(name, email, password);
       if (ok) {
         resetFields();
         closeAuthModal();
@@ -49,8 +49,8 @@ export default function AuthModal() {
     }
   };
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    const ok = googleLogin(credentialResponse);
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const ok = await googleLogin(credentialResponse);
     if (ok) {
       resetFields();
       closeAuthModal();

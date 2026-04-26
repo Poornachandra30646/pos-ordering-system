@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { TRACK_STEPS } from '../data/menuData';
 
 export default function TrackingModal() {
-  const { trackingOpen, currentTrackStep, orderId, resetOrder } = useApp();
+  const { trackingOpen, currentTrackStep, orderId, resetOrder, closeTracking, navigateToPage } = useApp();
 
   const est = Math.max(5, (TRACK_STEPS.length - currentTrackStep - 1) * 6);
 
@@ -35,6 +35,15 @@ export default function TrackingModal() {
           ))}
         </div>
         <div className="tracking-footer">
+          <button
+            className="back-market-btn"
+            onClick={() => {
+              closeTracking();
+              navigateToPage('home');
+            }}
+          >
+            Back to Home
+          </button>
           <button className="new-order-btn" onClick={resetOrder}>
             Order Again 🍕
           </button>

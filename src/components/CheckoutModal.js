@@ -16,6 +16,14 @@ export default function CheckoutModal() {
   } = useApp();
 
   const [payMethod, setPayMethod] = useState('Credit Card');
+  const [deliveryInfo, setDeliveryInfo] = useState({
+    fullName: '',
+    phone: '',
+    address: '',
+    city: '',
+    zip: '',
+    notes: '',
+  });
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) closeCheckout();
@@ -23,35 +31,73 @@ export default function CheckoutModal() {
 
   const nextStep = () => setCheckoutStep((s) => Math.min(3, s + 1));
 
+  const updateField = (field, value) => {
+    setDeliveryInfo((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePlaceOrder = () => {
+    placeOrder({ ...deliveryInfo, payMethod });
+  };
+
   const renderStepBody = () => {
     if (checkoutStep === 1) {
       return (
         <>
           <div className="form-group">
             <label className="form-label">Full Name</label>
-            <input className="form-input" placeholder="John Doe" />
+            <input
+              className="form-input"
+              placeholder="John Doe"
+              value={deliveryInfo.fullName}
+              onChange={(e) => updateField('fullName', e.target.value)}
+            />
           </div>
           <div className="form-group">
             <label className="form-label">Phone Number</label>
-            <input className="form-input" placeholder="+1 555 000 0000" />
+            <input
+              className="form-input"
+              placeholder="+1 555 000 0000"
+              value={deliveryInfo.phone}
+              onChange={(e) => updateField('phone', e.target.value)}
+            />
           </div>
           <div className="form-group">
             <label className="form-label">Delivery Address</label>
-            <input className="form-input" placeholder="123 Main Street" />
+            <input
+              className="form-input"
+              placeholder="123 Main Street"
+              value={deliveryInfo.address}
+              onChange={(e) => updateField('address', e.target.value)}
+            />
           </div>
           <div className="form-row">
             <div className="form-group" style={{ margin: 0 }}>
               <label className="form-label">City</label>
-              <input className="form-input" placeholder="New York" />
+              <input
+                className="form-input"
+                placeholder="New York"
+                value={deliveryInfo.city}
+                onChange={(e) => updateField('city', e.target.value)}
+              />
             </div>
             <div className="form-group" style={{ margin: 0 }}>
               <label className="form-label">ZIP Code</label>
-              <input className="form-input" placeholder="10001" />
+              <input
+                className="form-input"
+                placeholder="10001"
+                value={deliveryInfo.zip}
+                onChange={(e) => updateField('zip', e.target.value)}
+              />
             </div>
           </div>
           <div className="form-group">
             <label className="form-label">Delivery Notes (optional)</label>
-            <input className="form-input" placeholder="Leave at door, ring bell, etc." />
+            <input
+              className="form-input"
+              placeholder="Leave at door, ring bell, etc."
+              value={deliveryInfo.notes}
+              onChange={(e) => updateField('notes', e.target.value)}
+            />
           </div>
           <button className="next-btn" onClick={nextStep} style={{ marginTop: '.5rem' }}>
             Continue to Payment →
@@ -183,7 +229,7 @@ export default function CheckoutModal() {
             <span style={{ color: 'var(--gold)' }}>${total.toFixed(2)}</span>
           </div>
         </div>
-        <button className="place-btn" onClick={placeOrder}>
+        <button className="place-btn" onClick={handlePlaceOrder}>
           🔥 Place Order Now!
         </button>
       </>

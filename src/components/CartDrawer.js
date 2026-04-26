@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function CartDrawer() {
   const {
@@ -13,6 +14,7 @@ export default function CartDrawer() {
     total,
     openCheckout,
   } = useApp();
+  const { isAuthenticated, openAuthModal } = useAuth();
 
   return (
     <div className={`cart-drawer ${cartOpen ? 'open' : ''}`}>
@@ -22,7 +24,21 @@ export default function CartDrawer() {
       </div>
 
       <div className="cart-items">
-        {cart.length === 0 ? (
+        {!isAuthenticated ? (
+          <div className="cart-empty">
+            <div className="cart-empty-icon">🔒</div>
+            <div style={{ fontWeight: 600 }}>Sign in to view your cart</div>
+            <div style={{ fontSize: 13 }}>Your cart is tied to your account.</div>
+            <button
+              className="checkout-btn"
+              type="button"
+              onClick={() => openAuthModal('login')}
+              style={{ marginTop: '1rem' }}
+            >
+              Sign In
+            </button>
+          </div>
+        ) : cart.length === 0 ? (
           <div className="cart-empty">
             <div className="cart-empty-icon">🍕</div>
             <div style={{ fontWeight: 600 }}>Your cart is empty</div>

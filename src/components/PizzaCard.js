@@ -2,13 +2,19 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 
 export default function PizzaCard({ pizza }) {
-  const { openCustomize } = useApp();
+  const { openCustomize, outOfStockIds } = useApp();
+  const isOOS = outOfStockIds.has(pizza.id);
 
   return (
-    <div className="pizza-card" onClick={() => openCustomize(pizza)}>
+    <div
+      className="pizza-card"
+      onClick={() => !isOOS && openCustomize(pizza)}
+      style={isOOS ? { opacity: 0.55, pointerEvents: 'none', cursor: 'not-allowed' } : {}}
+    >
       <div className="pizza-img">
         <span>{pizza.emoji}</span>
-        {pizza.popular && <div className="badge-popular">🔥 Popular</div>}
+        {isOOS && <div className="badge-oos">🚫 Out of Stock</div>}
+        {pizza.popular && !isOOS && <div className="badge-popular">🔥 Popular</div>}
         {pizza.veg && <div className="badge-veg">🌿 Veg</div>}
       </div>
       <div className="pizza-info">
@@ -24,8 +30,10 @@ export default function PizzaCard({ pizza }) {
               e.stopPropagation();
               openCustomize(pizza);
             }}
+            disabled={isOOS}
+            style={isOOS ? { opacity: 0.4, cursor: 'not-allowed' } : {}}
           >
-            + Customize
+            {isOOS ? 'Unavailable' : '+ Customize'}
           </button>
         </div>
       </div>

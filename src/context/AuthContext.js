@@ -1,17 +1,11 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { registerUser, loginUser, googleLoginUser } from '../services/api';
 
 const AuthContext = createContext();
 
 export function useAuth() {
   return useContext(AuthContext);
-}
-
-function generateFakeToken(user) {
-  // Mock JWT structure for demo purposes
-  const header = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' }));
-  const payload = btoa(JSON.stringify({ ...user, iat: Date.now() }));
-  return `${header}.${payload}.`;
 }
 
 export function AuthProvider({ children }) {
@@ -24,7 +18,8 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem('pi_auth_user');
-      if (stored) {
+      const token = localStorage.getItem('pi_auth_token');
+      if (stored && token) {
         const parsed = JSON.parse(stored);
         if (parsed && parsed.email) {
           setUser(parsed);
@@ -36,48 +31,51 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const persistUser = useCallback((userData) => {
+  const persistUser = useCallback((token, userData) => {
     setUser(userData);
     setIsAuthenticated(true);
     localStorage.setItem('pi_auth_user', JSON.stringify(userData));
-    localStorage.setItem('pi_auth_token', generateFakeToken(userData));
+    localStorage.setItem('pi_auth_token', token);
   }, []);
 
-  const login = useCallback((email, password) => {
+  const login = useCallback(async (email, password) => {
     if (!email || !password) return false;
-    // Mock login: accept any non-empty credentials
-    const newUser = {
-      name: email.split('@')[0],
-      email,
-      picture: null,
-    };
-    persistUser(newUser);
-    return true;
+    try {
+      const res = await loginUser({ email, password });
+      persistUser(res.data.token, res.data.user);
+      return true;
+    } catch (err) {
+      console.error('Login error:', err.response?.data?.message || err.message);
+      return false;
+    }
   }, [persistUser]);
 
-  const signup = useCallback((name, email, password) => {
+  const signup = useCallback(async (name, email, password) => {
     if (!name || !email || !password) return false;
-    const newUser = {
-      name,
-      email,
-      picture: null,
-    };
-    persistUser(newUser);
-    return true;
+    try {
+      const res = await registerUser({ name, email, password });
+      persistUser(res.data.token, res.data.user);
+      return true;
+    } catch (err) {
+      console.error('Signup error:', err.response?.data?.message || err.message);
+      return false;
+    }
   }, [persistUser]);
 
-  const googleLogin = useCallback((credentialResponse) => {
+  const googleLogin = useCallback(async (credentialResponse) => {
     try {
       const decoded = jwtDecode(credentialResponse.credential);
-      const newUser = {
+      const payload = {
         name: decoded.name || decoded.given_name || 'User',
         email: decoded.email,
         picture: decoded.picture || null,
+        googleId: decoded.sub || null,
       };
-      persistUser(newUser);
+      const res = await googleLoginUser(payload);
+      persistUser(res.data.token, res.data.user);
       return true;
     } catch (err) {
-      console.error('Google login decode failed', err);
+      console.error('Google login error:', err.response?.data?.message || err.message);
       return false;
     }
   }, [persistUser]);
@@ -87,6 +85,7 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
     localStorage.removeItem('pi_auth_user');
     localStorage.removeItem('pi_auth_token');
+    localStorage.removeItem('pi_cart');
   }, []);
 
   const openAuthModal = useCallback((tab = 'login') => {
